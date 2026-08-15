@@ -13,9 +13,6 @@ import os
 
 
 def _env(name: str, default: str = "") -> str:
-    # GitHub Actions "vars.XXX" o'rnatilmagan bo'lsa ham, muhit o'zgaruvchisini
-    # BO'SH QATOR sifatida beradi (umuman yo'q qilib emas) - shuning uchun
-    # bo'sh qatorni ham "standart qiymatni qo'llash kerak" deb hisoblaymiz.
     value = os.environ.get(name, "").strip()
     return value if value else default
 
@@ -26,14 +23,14 @@ GEMINI_API_KEY = _env("GEMINI_API_KEY")
 ELEVENLABS_API_KEY = _env("ELEVENLABS_API_KEY")
 
 # --- Sozlamalar (Variables) ---
-CHANNEL_USERNAME = _env("CHANNEL_USERNAME")  # masalan "@ai_praktika"
-ADMIN_CHAT_ID = _env("ADMIN_CHAT_ID")  # sizning shaxsiy Telegram ID raqamingiz
+CHANNEL_USERNAME = _env("CHANNEL_USERNAME")
+ADMIN_CHAT_ID = _env("ADMIN_CHAT_ID")
 
-ELEVENLABS_VOICE_ID = _env("ELEVENLABS_VOICE_ID", "21m00Tcm4TlvDq8ikWAM")  # "Rachel" - standart
+ELEVENLABS_VOICE_ID = _env("ELEVENLABS_VOICE_ID", "21m00Tcm4TlvDq8ikWAM")
 ELEVENLABS_MODEL_ID = _env("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
 
-GEMINI_TEXT_MODEL = _env("GEMINI_TEXT_MODEL", "gemini-2.5-flash")
-GEMINI_IMAGE_MODEL = _env("GEMINI_IMAGE_MODEL", "gemini-2.5-flash-image")
+GEMINI_TEXT_MODEL = _env("GEMINI_TEXT_MODEL", "gemini-3.6-flash")
+GEMINI_IMAGE_MODEL = _env("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-image")
 
 WAIT_MINUTES = float(_env("WAIT_MINUTES", "9"))
 MAX_REGENERATE_ATTEMPTS = int(_env("MAX_REGENERATE_ATTEMPTS", "3"))
