@@ -13,7 +13,11 @@ import os
 
 
 def _env(name: str, default: str = "") -> str:
-    return os.environ.get(name, default).strip()
+    # GitHub Actions "vars.XXX" o'rnatilmagan bo'lsa ham, muhit o'zgaruvchisini
+    # BO'SH QATOR sifatida beradi (umuman yo'q qilib emas) - shuning uchun
+    # bo'sh qatorni ham "standart qiymatni qo'llash kerak" deb hisoblaymiz.
+    value = os.environ.get(name, "").strip()
+    return value if value else default
 
 
 # --- Maxfiy kalitlar (Secrets) ---
