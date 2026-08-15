@@ -1,0 +1,58 @@
+name: AI Praktika - avtomatik post
+
+"on":
+  schedule:
+    - cron: "50 3 * * *"
+    - cron: "50 7 * * *"
+    - cron: "50 12 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-praktika-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Repo'ni olish
+        uses: actions/checkout@v4
+
+      - name: Python o'rnatish
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Kutubxonalarni o'rnatish
+        run: pip install -r requirements.txt
+
+      - name: Pipeline'ni ishga tushirish
+        working-directory: scripts
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          CHANNEL_USERNAME: ${{ vars.CHANNEL_USERNAME }}
+          ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
+          ELEVENLABS_VOICE_ID: ${{ vars.ELEVENLABS_VOICE_ID }}
+          ELEVENLABS_MODEL_ID: ${{ vars.ELEVENLABS_MODEL_ID }}
+          GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
+          GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
+          WAIT_MINUTES: ${{ vars.WAIT_MINUTES }}
+        run: python main.py
+
+      - name: Mavzular tarixini saqlab qo'yish (commit)
+        run: |
+          git config user.name "ai-praktika-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/history.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update topic history [skip ci]"
+            git push
+          else
+            echo "O'zgarish yo'q, commit qilinmadi."
+          fi
