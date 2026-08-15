@@ -33,7 +33,7 @@ GEMINI_TEXT_MODEL = _env("GEMINI_TEXT_MODEL", "gemini-3.6-flash")
 GEMINI_IMAGE_MODEL = _env("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-image")
 
 WAIT_MINUTES = float(_env("WAIT_MINUTES", "9"))
-MAX_REGENERATE_ATTEMPTS = int(_env("MAX_REGENERATE_ATTEMPTS", "3"))
+MAX_REGENERATE_ATTEMPTS = int(_env("MAX_REGENERATE_ATTEMPTS", "2"))
 
 RUBRIKA = "Claude (sun'iy intellekt) dan kundalik ish, o'qish va biznesda foydalanish bo'yicha amaliy maslahatlar"
 
