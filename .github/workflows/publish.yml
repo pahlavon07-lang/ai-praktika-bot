@@ -2,10 +2,14 @@ name: AI Praktika - avtomatik post
 
 "on":
   schedule:
+    # Barcha vaqtlar UTC. Toshkent = UTC+5, shuning uchun postdan 10 daqiqa oldin ishga tushadi:
+    # 08:50 Toshkent -> 03:50 UTC (09:00 dagi post uchun)
     - cron: "50 3 * * *"
+    # 12:50 Toshkent -> 07:50 UTC (13:00 dagi post uchun)
     - cron: "50 7 * * *"
+    # 17:50 Toshkent -> 12:50 UTC (18:00 dagi post uchun)
     - cron: "50 12 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch: {}  # "Run workflow" tugmasi orqali istalgan vaqtda qo'lda ishga tushirish
 
 permissions:
   contents: write
@@ -34,14 +38,13 @@ jobs:
         working-directory: scripts
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           CHANNEL_USERNAME: ${{ vars.CHANNEL_USERNAME }}
           ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
           ELEVENLABS_VOICE_ID: ${{ vars.ELEVENLABS_VOICE_ID }}
           ELEVENLABS_MODEL_ID: ${{ vars.ELEVENLABS_MODEL_ID }}
-          GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
-          GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
+          GROQ_MODEL: ${{ vars.GROQ_MODEL }}
           WAIT_MINUTES: ${{ vars.WAIT_MINUTES }}
         run: python main.py
 
