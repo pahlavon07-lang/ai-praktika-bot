@@ -1,13 +1,6 @@
 """
 Markazlashtirilgan konfiguratsiya. Barcha maxfiy va sozlanadigan qiymatlar
 GitHub Actions muhit o'zgaruvchilaridan (Secrets/Variables) olinadi.
-
-MUHIM: quyidagi model nomlari (GEMINI_TEXT_MODEL, GEMINI_IMAGE_MODEL) vaqti-vaqti
-bilan Google tomonidan yangilanishi mumkin. Agar skript "model topilmadi" (404)
-xatosi bersa, https://ai.google.dev/gemini-api/docs saytidan joriy model nomini
-tekshirib, GitHub repo -> Settings -> Secrets and variables -> Actions -> Variables
-bo'limida GEMINI_TEXT_MODEL / GEMINI_IMAGE_MODEL qiymatini yangilang (kodni
-o'zgartirish shart emas).
 """
 import os
 
@@ -19,8 +12,9 @@ def _env(name: str, default: str = "") -> str:
 
 # --- Maxfiy kalitlar (Secrets) ---
 TELEGRAM_BOT_TOKEN = _env("TELEGRAM_BOT_TOKEN")
-GEMINI_API_KEY = _env("GEMINI_API_KEY")
 ELEVENLABS_API_KEY = _env("ELEVENLABS_API_KEY")
+GROQ_API_KEY = _env("GROQ_API_KEY")
+GROQ_MODEL = _env("GROQ_MODEL", "openai/gpt-oss-120b")
 
 # --- Sozlamalar (Variables) ---
 CHANNEL_USERNAME = _env("CHANNEL_USERNAME")
@@ -28,9 +22,6 @@ ADMIN_CHAT_ID = _env("ADMIN_CHAT_ID")
 
 ELEVENLABS_VOICE_ID = _env("ELEVENLABS_VOICE_ID", "21m00Tcm4TlvDq8ikWAM")
 ELEVENLABS_MODEL_ID = _env("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
-
-GEMINI_TEXT_MODEL = _env("GEMINI_TEXT_MODEL", "gemini-3.6-flash")
-GEMINI_IMAGE_MODEL = _env("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-image")
 
 WAIT_MINUTES = float(_env("WAIT_MINUTES", "9"))
 MAX_REGENERATE_ATTEMPTS = int(_env("MAX_REGENERATE_ATTEMPTS", "2"))
