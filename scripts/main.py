@@ -157,7 +157,7 @@ def build_one_post() -> dict:
 def run() -> None:
     missing = [
         name for name in [
-            "TELEGRAM_BOT_TOKEN", "GROQ_API_KEY", "ELEVENLABS_API_KEY",
+            "TELEGRAM_BOT_TOKEN", "GROQ_API_KEY", "AISHA_API_KEY",
             "CHANNEL_USERNAME", "ADMIN_CHAT_ID",
         ]
         if not getattr(config, name)
