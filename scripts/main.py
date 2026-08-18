@@ -1,4 +1,16 @@
-"""Asosiy orkestrator: 1-6 barcha "agentlar"ni ketma-ket ishga tushiradi."""
+"""Asosiy orkestrator: 1-6 barcha "agentlar"ni ketma-ket ishga tushiradi.
+
+Oqim:
+1-2) Groq (bepul, kartasiz LLM): mavzu tanlash + post yozish
+3) Lokal PIL: rasm generatsiya (tashqi API'ga bog'liq emas, har doim ishlaydi)
+4) ElevenLabs: audio generatsiya
+5) Groq: sifat nazorati (QC) - agar rad etilsa, qaytadan yozadi (limitgacha)
+   -> admin'ga preview yuboriladi, WAIT_MINUTES davomida "Qayta qilish" / "Hoziroq
+      chiqarish" tugmalari kutiladi
+6) Telegram: kanalga chiqarish (agar tugma bosilmasa - avtomatik; "Qayta qilish"
+   bosilsa - butun oqim qaytadan boshidan ishlaydi va tayyor bo'lgach, vaqtidan
+   qat'iy nazar, kanalga chiqariladi)
+"""
 import hashlib
 import io
 import sys
@@ -9,11 +21,18 @@ import traceback
 from PIL import Image, ImageDraw, ImageFont
 
 import config
-import gemini_client
+import groq_client
 import history
 import telegram_client
 from elevenlabs_client import generate_audio
 
+
+# --- Zaxira (fallback) rasm generatori ---
+# SABAB: Google bepul tarifida Nano Banana (Gemini rasm) modellari uchun kvota
+# odatda 0 (nol) bo'ladi - ya'ni bepul kalit bilan Gemini orqali rasm
+# generatsiya qilib BO'LMAYDI. Shuning uchun bu yerda oddiy, lekin chiroyli
+# "kartochka" ko'rinishidagi rasm PIL bilan lokal tarzda, internet kerak
+# bo'lmasdan yaratiladi - bu har doim ishlaydi.
 
 _IMG_SIZE = (1024, 1024)
 _PALETTES = [
@@ -95,28 +114,26 @@ def _is_quota_error(exc: Exception) -> bool:
     return "429" in text or "quota" in text.lower() or "too_many_requests" in text.lower()
 
 
-def _get_image_bytes(image_prompt: str, topic: str) -> bytes:
-    try:
-        return gemini_client.generate_image(image_prompt)
-    except Exception as exc:  # noqa: BLE001
-        print(f"[OGOHLANTIRISH] Gemini rasm generatsiya qilolmadi, zaxira rasm ishlatiladi: {exc}")
-        return generate_fallback_image(topic)
-
-
 def build_one_post() -> dict:
+    """To'liq bitta postni tayyorlaydi: mavzu+matn+rasm+audio+QC. QC o'tmasa,
+    MAX_REGENERATE_ATTEMPTS marta qayta urinadi. Kvota xatosida uzoqroq
+    kutib, keyin qayta urinadi - kvotani behuda sarflamaslik uchun.
+
+    Matn/QC uchun Groq (bepul, kartasiz) ishlatiladi. Rasm uchun to'g'ridan-to'g'ri
+    lokal PIL generatori ishlatiladi (tashqi API'ga bog'liq emas, har doim ishlaydi)."""
     used_topics = history.load()
     last_error = None
 
     for attempt in range(1, config.MAX_REGENERATE_ATTEMPTS + 1):
         try:
-            draft = gemini_client.generate_topic_and_post(used_topics)
-            qc = gemini_client.qc_check(draft["post_text"])
+            draft = groq_client.generate_topic_and_post(used_topics)
+            qc = groq_client.qc_check(draft["post_text"])
             if not qc.get("ok"):
                 print(f"[QC RAD ETDI - urinish {attempt}] Sabab: {qc.get('reason')}")
-                used_topics = used_topics + [draft["topic"]]
+                used_topics = used_topics + [draft["topic"]]  # qayta urinishda shu mavzuni ham tashla
                 continue
 
-            image_bytes = _get_image_bytes(draft["image_prompt"], draft["topic"])
+            image_bytes = generate_fallback_image(draft["topic"])
             audio_bytes = generate_audio(draft["audio_text"])
 
             return {
@@ -140,7 +157,7 @@ def build_one_post() -> dict:
 def run() -> None:
     missing = [
         name for name in [
-            "TELEGRAM_BOT_TOKEN", "GEMINI_API_KEY", "ELEVENLABS_API_KEY",
+            "TELEGRAM_BOT_TOKEN", "GROQ_API_KEY", "ELEVENLABS_API_KEY",
             "CHANNEL_USERNAME", "ADMIN_CHAT_ID",
         ]
         if not getattr(config, name)
@@ -169,6 +186,7 @@ def run() -> None:
         new_post = build_one_post()
         new_preview = telegram_client.send_preview(new_post["post_text"], new_post["image_bytes"], new_post["audio_bytes"])
         history.append(new_post["topic"])
+        # Qayta qilingan post uchun ham xuddi shu tanlov oynasi beriladi.
         second_decision = telegram_client.poll_for_decision(new_preview["control_message_id"], config.WAIT_MINUTES)
         if second_decision == telegram_client.BTN_REDO:
             telegram_client.notify_admin(
