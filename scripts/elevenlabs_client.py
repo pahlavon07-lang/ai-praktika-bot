@@ -16,6 +16,12 @@ def generate_audio(text: str) -> bytes:
     body = {
         "text": text,
         "model_id": config.ELEVENLABS_MODEL_ID,
+        "voice_settings": {
+            "stability": 0.35,
+            "similarity_boost": 0.8,
+            "style": 0.6,
+            "use_speaker_boost": True,
+        },
     }
     resp = requests.post(url, headers=headers, json=body, params={"output_format": "mp3_44100_128"}, timeout=90)
     if resp.status_code != 200:
