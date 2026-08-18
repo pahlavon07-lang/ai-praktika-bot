@@ -1,9 +1,8 @@
 """Telegram Bot API bilan ishlash: admin'ga preview yuborish, tugma bosilishini
 kuzatish (polling) va kanalga chiqarish (6-agent)."""
+import json
 import time
-
 import requests
-
 import config
 
 API_BASE = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}"
@@ -65,7 +64,7 @@ def send_preview(post_text: str, image_bytes: bytes, audio_bytes: bytes) -> dict
                 f"Agar o'zgartirish kerak bo'lsa - \"Qayta qilish\" tugmasini bosing.\n"
                 f"Darhol chiqarish uchun - \"Hoziroq chiqarish\" tugmasini bosing."
             ),
-            "reply_markup": keyboard,
+            "reply_markup": json.dumps(keyboard),
         },
     )
     return {
