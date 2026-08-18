@@ -30,7 +30,8 @@ def generate_audio(text: str) -> bytes:
     if not audio_path:
         raise RuntimeError(f"Aisha TTS javobida audio_path topilmadi: {data}")
 
-    audio_resp = requests.get(f"{BASE_URL}{audio_path}", timeout=60)
+    audio_url = audio_path if audio_path.startswith("http") else f"{BASE_URL}{audio_path}"
+    audio_resp = requests.get(audio_url, timeout=60)
     if audio_resp.status_code != 200:
         raise RuntimeError(f"Aisha audio faylini yuklab bo'lmadi: HTTP {audio_resp.status_code}")
     return audio_resp.content
