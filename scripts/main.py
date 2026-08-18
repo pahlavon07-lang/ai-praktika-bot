@@ -24,7 +24,7 @@ import config
 import groq_client
 import history
 import telegram_client
-from elevenlabs_client import generate_audio
+from aisha_client import generate_audio
 
 
 # --- Zaxira (fallback) rasm generatori ---
