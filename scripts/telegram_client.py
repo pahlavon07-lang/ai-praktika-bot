@@ -45,7 +45,7 @@ def send_preview(post_text: str, image_bytes: bytes, audio_bytes: bytes) -> dict
     audio_result = _call(
         "sendAudio",
         data={"chat_id": config.ADMIN_CHAT_ID, "title": config.CHANNEL_BRAND},
-        files={"audio": ("post.mp3", audio_bytes, "audio/mpeg")},
+        files={"audio": ("post.wav", audio_bytes, "audio/wav")},
     )
 
     keyboard = {
