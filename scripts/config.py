@@ -12,16 +12,14 @@ def _env(name: str, default: str = "") -> str:
 
 # --- Maxfiy kalitlar (Secrets) ---
 TELEGRAM_BOT_TOKEN = _env("TELEGRAM_BOT_TOKEN")
-ELEVENLABS_API_KEY = _env("ELEVENLABS_API_KEY")
 GROQ_API_KEY = _env("GROQ_API_KEY")
 GROQ_MODEL = _env("GROQ_MODEL", "openai/gpt-oss-120b")
+AISHA_API_KEY = _env("AISHA_API_KEY")
+AISHA_MOOD = _env("AISHA_MOOD", "Cheerful")
 
 # --- Sozlamalar (Variables) ---
 CHANNEL_USERNAME = _env("CHANNEL_USERNAME")
 ADMIN_CHAT_ID = _env("ADMIN_CHAT_ID")
-
-ELEVENLABS_VOICE_ID = _env("ELEVENLABS_VOICE_ID", "21m00Tcm4TlvDq8ikWAM")
-ELEVENLABS_MODEL_ID = _env("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
 
 WAIT_MINUTES = float(_env("WAIT_MINUTES", "9"))
 MAX_REGENERATE_ATTEMPTS = int(_env("MAX_REGENERATE_ATTEMPTS", "2"))
