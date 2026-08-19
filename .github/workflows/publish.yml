@@ -34,16 +34,20 @@ jobs:
       - name: Kutubxonalarni o'rnatish
         run: pip install -r requirements.txt
 
+      - name: ffmpeg mavjudligini tekshirish
+        run: ffmpeg -version || sudo apt-get update && sudo apt-get install -y ffmpeg
+
       - name: Pipeline'ni ishga tushirish
         working-directory: scripts
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          AISHA_API_KEY: ${{ secrets.AISHA_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           CHANNEL_USERNAME: ${{ vars.CHANNEL_USERNAME }}
           ADMIN_CHAT_ID: ${{ vars.ADMIN_CHAT_ID }}
-          GROQ_MODEL: ${{ vars.GROQ_MODEL }}
-          AISHA_MOOD: ${{ vars.AISHA_MOOD }}
+          GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
+          ELEVENLABS_VOICE_ID: ${{ vars.ELEVENLABS_VOICE_ID }}
+          ELEVENLABS_MODEL_ID: ${{ vars.ELEVENLABS_MODEL_ID }}
           WAIT_MINUTES: ${{ vars.WAIT_MINUTES }}
         run: python main.py
 
