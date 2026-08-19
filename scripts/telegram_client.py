@@ -2,7 +2,9 @@
 kuzatish (polling) va kanalga chiqarish (6-agent)."""
 import json
 import time
+
 import requests
+
 import config
 
 API_BASE = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}"
@@ -29,24 +31,27 @@ def _split_caption(text: str, limit: int = 1024) -> tuple[str, str]:
     return text[:cut].strip(), text[cut:].strip()
 
 
-def send_preview(post_text: str, image_bytes: bytes, audio_bytes: bytes) -> dict:
+def send_preview(post_text: str, image_bytes: bytes, voice_bytes: bytes | None = None) -> dict:
     """Adminga (shaxsiy chatga) tayyor postni + boshqaruv tugmalarini yuboradi.
-    Qaytaradi: {"photo_message_id", "control_message_id", "photo_file_id", "audio_file_id"}
+    voice_bytes berilmasa (None), ovoz yuborilmaydi.
+    Qaytaradi: {"control_message_id", "photo_file_id", "voice_file_id"}
     """
     caption, rest = _split_caption(post_text)
     photo_result = _call(
         "sendPhoto",
-        data={"chat_id": config.ADMIN_CHAT_ID, "caption": caption},
+        data={"chat_id": config.ADMIN_CHAT_ID, "caption": caption, "parse_mode": "HTML"},
         files={"photo": ("post.png", image_bytes, "image/png")},
     )
     if rest:
-        _call("sendMessage", data={"chat_id": config.ADMIN_CHAT_ID, "text": rest})
+        _call("sendMessage", data={"chat_id": config.ADMIN_CHAT_ID, "text": rest, "parse_mode": "HTML"})
 
-    audio_result = _call(
-        "sendAudio",
-        data={"chat_id": config.ADMIN_CHAT_ID, "title": config.CHANNEL_BRAND},
-        files={"audio": ("post.wav", audio_bytes, "audio/wav")},
-    )
+    voice_result = None
+    if voice_bytes:
+        voice_result = _call(
+            "sendVoice",
+            data={"chat_id": config.ADMIN_CHAT_ID},
+            files={"voice": ("post.ogg", voice_bytes, "audio/ogg")},
+        )
 
     keyboard = {
         "inline_keyboard": [[
@@ -70,7 +75,7 @@ def send_preview(post_text: str, image_bytes: bytes, audio_bytes: bytes) -> dict
     return {
         "control_message_id": control["message_id"],
         "photo_file_id": photo_result["photo"][-1]["file_id"],
-        "audio_file_id": audio_result["audio"]["file_id"],
+        "voice_file_id": voice_result["voice"]["file_id"] if voice_result else None,
     }
 
 
@@ -105,12 +110,16 @@ def poll_for_decision(control_message_id: int, wait_minutes: float) -> str | Non
     return None
 
 
-def publish_to_channel(post_text: str, photo_file_id: str, audio_file_id: str) -> None:
+def publish_to_channel(post_text: str, photo_file_id: str, voice_file_id: str | None = None) -> None:
     caption, rest = _split_caption(post_text)
-    _call("sendPhoto", data={"chat_id": config.CHANNEL_USERNAME, "photo": photo_file_id, "caption": caption})
+    _call(
+        "sendPhoto",
+        data={"chat_id": config.CHANNEL_USERNAME, "photo": photo_file_id, "caption": caption, "parse_mode": "HTML"},
+    )
     if rest:
-        _call("sendMessage", data={"chat_id": config.CHANNEL_USERNAME, "text": rest})
-    _call("sendAudio", data={"chat_id": config.CHANNEL_USERNAME, "audio": audio_file_id, "title": config.CHANNEL_BRAND})
+        _call("sendMessage", data={"chat_id": config.CHANNEL_USERNAME, "text": rest, "parse_mode": "HTML"})
+    if voice_file_id:
+        _call("sendVoice", data={"chat_id": config.CHANNEL_USERNAME, "voice": voice_file_id})
 
 
 def notify_admin(text: str) -> None:
