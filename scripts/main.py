@@ -1,10 +1,10 @@
-"""Asosiy orkestrator: 1-6 barcha "agentlar"ni ketma-ket ishga tushiradi.
+"""Asosiy orkestrator: barcha "agentlar"ni ketma-ket ishga tushiradi.
 
 Oqim:
-1-2) Groq (bepul, kartasiz LLM): mavzu tanlash + post yozish
-3) Lokal PIL: rasm generatsiya (tashqi API'ga bog'liq emas, har doim ishlaydi)
-4) ElevenLabs: audio generatsiya
-5) Groq: sifat nazorati (QC) - agar rad etilsa, qaytadan yozadi (limitgacha)
+1-2) Gemini (gemini-3.6-flash): mavzu tanlash + post yozish
+3) Pollinations.ai: maksimal detallashgan 3D-render uslubidagi rasm (bepul, kalitsiz)
+4) ElevenLabs + ffmpeg: ovozli xabar (voice message, OGG/OPUS)
+5) Gemini: sifat nazorati (QC) - agar rad etilsa, qaytadan yozadi (limitgacha)
    -> admin'ga preview yuboriladi, WAIT_MINUTES davomida "Qayta qilish" / "Hoziroq
       chiqarish" tugmalari kutiladi
 6) Telegram: kanalga chiqarish (agar tugma bosilmasa - avtomatik; "Qayta qilish"
@@ -21,18 +21,17 @@ import traceback
 from PIL import Image, ImageDraw, ImageFont
 
 import config
-import groq_client
+import gemini_client
 import history
+import image_client
 import telegram_client
-from aisha_client import generate_audio
+from elevenlabs_client import generate_voice_message
 
 
 # --- Zaxira (fallback) rasm generatori ---
-# SABAB: Google bepul tarifida Nano Banana (Gemini rasm) modellari uchun kvota
-# odatda 0 (nol) bo'ladi - ya'ni bepul kalit bilan Gemini orqali rasm
-# generatsiya qilib BO'LMAYDI. Shuning uchun bu yerda oddiy, lekin chiroyli
-# "kartochka" ko'rinishidagi rasm PIL bilan lokal tarzda, internet kerak
-# bo'lmasdan yaratiladi - bu har doim ishlaydi.
+# SABAB: agar Pollinations.ai vaqtincha ishlamay qolsa, postni butunlay
+# to'xtatmaslik uchun oddiy "kartochka" ko'rinishidagi rasm PIL bilan lokal
+# tarzda, internet kerak bo'lmasdan yaratiladi.
 
 _IMG_SIZE = (1024, 1024)
 _PALETTES = [
@@ -115,32 +114,33 @@ def _is_quota_error(exc: Exception) -> bool:
 
 
 def build_one_post() -> dict:
-    """To'liq bitta postni tayyorlaydi: mavzu+matn+rasm+audio+QC. QC o'tmasa,
-    MAX_REGENERATE_ATTEMPTS marta qayta urinadi. Kvota xatosida uzoqroq
-    kutib, keyin qayta urinadi - kvotani behuda sarflamaslik uchun.
-
-    Matn/QC uchun Groq (bepul, kartasiz) ishlatiladi. Rasm uchun to'g'ridan-to'g'ri
-    lokal PIL generatori ishlatiladi (tashqi API'ga bog'liq emas, har doim ishlaydi)."""
+    """To'liq bitta postni tayyorlaydi: mavzu+matn+rasm+ovoz+QC. QC o'tmasa,
+    MAX_REGENERATE_ATTEMPTS marta qayta urinadi."""
     used_topics = history.load()
     last_error = None
 
     for attempt in range(1, config.MAX_REGENERATE_ATTEMPTS + 1):
         try:
-            draft = groq_client.generate_topic_and_post(used_topics)
-            qc = groq_client.qc_check(draft["post_text"])
+            draft = gemini_client.generate_topic_and_post(used_topics)
+            qc = gemini_client.qc_check(draft["post_text"])
             if not qc.get("ok"):
                 print(f"[QC RAD ETDI - urinish {attempt}] Sabab: {qc.get('reason')}")
                 used_topics = used_topics + [draft["topic"]]  # qayta urinishda shu mavzuni ham tashla
                 continue
 
-            image_bytes = generate_fallback_image(draft["topic"])
-            audio_bytes = generate_audio(draft["audio_text"])
+            try:
+                image_bytes = image_client.generate_image(draft["image_prompt"])
+            except Exception as img_exc:  # noqa: BLE001
+                print(f"[OGOHLANTIRISH] Pollinations rasm xatosi, zaxira rasmga o'tildi: {img_exc}")
+                image_bytes = generate_fallback_image(draft["topic"])
+
+            voice_bytes = generate_voice_message(draft["audio_text"])
 
             return {
                 "topic": draft["topic"],
                 "post_text": draft["post_text"],
                 "image_bytes": image_bytes,
-                "audio_bytes": audio_bytes,
+                "voice_bytes": voice_bytes,
             }
         except Exception as exc:  # noqa: BLE001
             last_error = exc
@@ -157,7 +157,7 @@ def build_one_post() -> dict:
 def run() -> None:
     missing = [
         name for name in [
-            "TELEGRAM_BOT_TOKEN", "GROQ_API_KEY", "AISHA_API_KEY",
+            "TELEGRAM_BOT_TOKEN", "GEMINI_API_KEY", "ELEVENLABS_API_KEY",
             "CHANNEL_USERNAME", "ADMIN_CHAT_ID",
         ]
         if not getattr(config, name)
@@ -169,13 +169,13 @@ def run() -> None:
     post = build_one_post()
     print(f"Post tayyor. Mavzu: {post['topic']}")
 
-    preview = telegram_client.send_preview(post["post_text"], post["image_bytes"], post["audio_bytes"])
+    preview = telegram_client.send_preview(post["post_text"], post["image_bytes"], post["voice_bytes"])
     history.append(post["topic"])
 
     decision = telegram_client.poll_for_decision(preview["control_message_id"], config.WAIT_MINUTES)
 
     if decision == telegram_client.BTN_PUBLISH_NOW or decision is None:
-        telegram_client.publish_to_channel(post["post_text"], preview["photo_file_id"], preview["audio_file_id"])
+        telegram_client.publish_to_channel(post["post_text"], preview["photo_file_id"], preview["voice_file_id"])
         telegram_client.notify_admin(f"✅ Post {config.CHANNEL_USERNAME} kanaliga chiqarildi.")
         print("Post kanalga chiqarildi.")
         return
@@ -184,7 +184,7 @@ def run() -> None:
         telegram_client.notify_admin("\U0001F504 Qayta qilinmoqda... tayyor bo'lgach yana yuboraman.")
         print("Foydalanuvchi 'Qayta qilish'ni bosdi. Yangi post tayyorlanmoqda...")
         new_post = build_one_post()
-        new_preview = telegram_client.send_preview(new_post["post_text"], new_post["image_bytes"], new_post["audio_bytes"])
+        new_preview = telegram_client.send_preview(new_post["post_text"], new_post["image_bytes"], new_post["voice_bytes"])
         history.append(new_post["topic"])
         # Qayta qilingan post uchun ham xuddi shu tanlov oynasi beriladi.
         second_decision = telegram_client.poll_for_decision(new_preview["control_message_id"], config.WAIT_MINUTES)
@@ -193,7 +193,7 @@ def run() -> None:
                 "Yana \"Qayta qilish\" bosildi, lekin bu safar avtomatik oqim faqat 2 marta qayta urinadi. "
                 "Yuqoridagi oxirgi post baribir kanalga chiqariladi."
             )
-        telegram_client.publish_to_channel(new_post["post_text"], new_preview["photo_file_id"], new_preview["audio_file_id"])
+        telegram_client.publish_to_channel(new_post["post_text"], new_preview["photo_file_id"], new_preview["voice_file_id"])
         telegram_client.notify_admin(f"✅ Qayta tayyorlangan post {config.CHANNEL_USERNAME} kanaliga chiqarildi.")
         print("Qayta tayyorlangan post kanalga chiqarildi.")
         return
