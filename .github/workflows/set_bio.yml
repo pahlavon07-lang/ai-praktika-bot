@@ -1,0 +1,27 @@
+name: Kanal tavsifini yangilash (bir martalik)
+
+"on":
+  workflow_dispatch: {}
+
+jobs:
+  set_bio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Repo'ni olish
+        uses: actions/checkout@v4
+
+      - name: Python o'rnatish
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Kutubxonalarni o'rnatish
+        run: pip install requests
+
+      - name: Kanal tavsifini yangilash
+        working-directory: scripts
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHANNEL_USERNAME: ${{ vars.CHANNEL_USERNAME }}
+        run: python set_bio.py
