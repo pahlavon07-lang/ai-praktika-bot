@@ -110,7 +110,15 @@ def generate_fallback_image(title: str, brand: str = "AI Praktika") -> bytes:
 
 def _is_quota_error(exc: Exception) -> bool:
     text = str(exc)
-    return "429" in text or "quota" in text.lower() or "too_many_requests" in text.lower()
+    lowered = text.lower()
+    return (
+        "429" in text
+        or "503" in text
+        or "quota" in lowered
+        or "too_many_requests" in lowered
+        or "unavailable" in lowered
+        or "high demand" in lowered
+    )
 
 
 def build_one_post() -> dict:
