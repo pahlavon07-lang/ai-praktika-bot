@@ -28,7 +28,7 @@ ELEVENLABS_VOICE_ID = _env("ELEVENLABS_VOICE_ID", "ydg3V9rJxFWplQkz1YYY")  # sha
 ELEVENLABS_MODEL_ID = _env("ELEVENLABS_MODEL_ID", "eleven_v3")
 
 WAIT_MINUTES = float(_env("WAIT_MINUTES", "9"))
-MAX_REGENERATE_ATTEMPTS = int(_env("MAX_REGENERATE_ATTEMPTS", "2"))
+MAX_REGENERATE_ATTEMPTS = int(_env("MAX_REGENERATE_ATTEMPTS", "4"))
 
 RUBRIKA = "Claude (sun'iy intellekt) dan kundalik ish, o'qish va biznesda foydalanish bo'yicha amaliy maslahatlar"
 
