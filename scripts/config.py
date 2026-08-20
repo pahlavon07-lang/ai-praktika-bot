@@ -43,15 +43,16 @@ Post uslubi va formati (o'zbek tilida yoziladi, namuna kanal uslubidan olingan):
 1) HECH QANDAY emoji ishlatilmaydi. HECH QANDAY hashtag ishlatilmaydi.
 2) Post to'g'ridan-to'g'ri fikr, kuzatuv yoki savol bilan boshlanadi - sarlavha yoki "salom" kabi kirish so'zlarisiz.
 3) Matn juda qisqa fikrlardan/jumlalardan iborat bo'ladi - HAR BIR fikr alohida qatorda, orasida BO'SH QATOR bilan (ya'ni ikkita \\n\\n) ajratiladi. Bu aforistik, "nafas oladigan" ritm beradi.
-4) Uslub: odatda shaxsiy kuzatuv yoki tajriba orqali boshlanadi ("Ko'rdim...", "Sinab ko'rdim...", "O'ylab qoldim..." kabi), so'ng shundan Claude AI bilan bog'liq amaliy xulosaga olib keladi.
+4) Uslub: odatda shaxsiy kuzatuv yoki tajriba orqali boshlanadi ("Ko'rdim...", "Sinab ko'rdim...", "O'ylab qoldim..." kabi), so'ng shundan ANIQ AMALIY xulosaga olib keladi (pastga qarang - 9-band).
 5) Ba'zan raqamlangan fikrlar bo'lishi mumkin (1-, 2-, 3- kabi), lekin bullet-list emas, oddiy oqim ichida yoziladi.
 6) Takrorlanuvchi parallel tuzilishlar ishlatish mumkin (masalan "Ba'zilar... Ba'zilar... Ba'zilar..." kabi) - kuchli ritm uchun.
 7) Post OXIRI kuchli, esda qolarli, qisqa bitta jumla/aforizm bilan tugaydi - shu yakuniy jumlani <b>...</b> HTML tegi bilan qalin qilib belgilang.
 8) Iqtibos yoki alohida urg'u berilishi kerak bo'lgan so'z/jumlalar uchun <em>...</em> (kursiv) ishlatilishi mumkin.
-9) Mavzu doim Claude AI (sun'iy intellekt)dan amaliy foydalanish bilan bog'liq bo'lishi kerak - lekin quruq "qanday qilish" ro'yxati emas, balki hikoya yoki kuzatuv orqali yetkaziladi.
-10) Umumiy uzunlik: 400-900 belgi atrofida.
-11) Matn ichida FAQAT <b> va <em> HTML teglaridan foydalaning, boshqa hech qanday teg ishlatmang (ular Telegram'da to'g'ridan-to'g'ri qalin/kursiv qilib ko'rsatiladi).
-12) Hech qanday soxta/tekshirilmagan da'vo, hech qanday reklama boshqa mahsulotga, hech qanday siyosiy/diniy mavzu bo'lmasin.
+9) ENG MUHIM QOIDA - POST ANIQ FOYDALI BO'LISHI SHART: har bir post ichida KAMIDA bitta ANIQ, NOMLANGAN Claude funksiyasi, vositasi yoki promptlash texnikasi tilga olinishi va o'quvchiga NIMA QILISH KERAKLIGI (amaliy qadam yoki aniq misol) tushuntirilishi SHART. Post faqat umumiy falsafiy mulohaza, hissiy kuzatuv yoki "AI hayotimizni o'zgartiryapti" kabi quruq gap bilan CHEGARALANMASLIGI kerak - o'quvchi postni o'qib bo'lgach, ANIQ nimani sinab ko'rish kerakligini bilib olishi shart.
+10) Mavzu doim Claude AI (sun'iy intellekt)dan amaliy foydalanish bilan bog'liq bo'lishi kerak - lekin quruq "qanday qilish" ro'yxati emas, balki hikoya yoki kuzatuv orqali yetkaziladi, va 9-banddagi aniqlik talabiga qat'iy rioya qilingan holda.
+11) Umumiy uzunlik: 400-900 belgi atrofida.
+12) Matn ichida FAQAT <b> va <em> HTML teglaridan foydalaning, boshqa hech qanday teg ishlatmang (ular Telegram'da to'g'ridan-to'g'ri qalin/kursiv qilib ko'rsatiladi).
+13) Hech qanday soxta/tekshirilmagan da'vo, hech qanday reklama boshqa mahsulotga, hech qanday siyosiy/diniy mavzu bo'lmasin.
 """
 
 # 3D-render uslubidagi rasm uchun umumiy stil so'zlari (Pollinations.ai promptiga qo'shiladi)
