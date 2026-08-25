@@ -26,6 +26,16 @@ ROSTER_DB = os.path.join(BASE_DIR, "roster.db")
 INTERACTIVE = "--interactive" in sys.argv
 
 
+def ask_int(prompt):
+    """Butun son kiritilguncha qayta so'raydi (noto'g'ri kiritishda yiqilmaydi)."""
+    while True:
+        raw = input(prompt).strip()
+        try:
+            return int(raw)
+        except ValueError:
+            print(f"   ! '{raw}' butun son emas, qaytadan kiriting.")
+
+
 def banner(text):
     print("\n" + "=" * 90)
     print(text)
@@ -134,7 +144,7 @@ def run_task3():
         print("\nYangi yozuv kiriting:")
         name = input("   Name    : ").strip()
         species = input("   Species : ").strip()
-        age = int(input("   Age     : ").strip())
+        age = ask_int("   Age     : ")
     else:
         # Interaktiv bo'lmagan rejimda namuna yozuv ishlatiladi,
         # shunda skript avtomatik ham ishlay oladi.
