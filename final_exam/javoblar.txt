@@ -1,0 +1,112 @@
+
+==========================================================================================
+TASK 1 — digit_sum(k)
+==========================================================================================
+digit_sum(     24) =   6   (tekshiruv: 6)
+digit_sum(    502) =   7   (tekshiruv: 7)
+digit_sum(      0) =   0   (tekshiruv: 0)
+digit_sum(      7) =   7   (tekshiruv: 7)
+digit_sum(   9999) =  36   (tekshiruv: 36)
+digit_sum( 123456) =  21   (tekshiruv: 21)
+digit_sum(   -389) =  20   (tekshiruv: 20)
+
+==========================================================================================
+TASK 2 — is_prime(n)
+==========================================================================================
+is_prime(    1) = False
+is_prime(    2) = True
+is_prime(    3) = True
+is_prime(    4) = False
+is_prime(    9) = False
+is_prime(   13) = True
+is_prime(   17) = True
+is_prime(   25) = False
+is_prime(   29) = True
+is_prime(   97) = True
+is_prime(  100) = False
+is_prime( 7919) = True
+
+2..50 oralig'idagi tub sonlar: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+
+==========================================================================================
+TASK 3 — SQLite: Roster jadvali
+==========================================================================================
+Boshlang'ich jadval:
+   Benjamin Sisko   | Human    |  40
+   Jadzia Dax       | Trill    | 300
+   Kira Nerys       | Bajoran  |  29
+
+[demo rejim] input() o'rniga namuna yozuv qo'shildi: Miles O'Brien | Human | 45
+   (real input uchun: python Final_Exam_solution.py --interactive)
+
+Yangilangan jadval:
+   Benjamin Sisko   | Human    |  40
+   Jadzia Dax       | Trill    | 300
+   Kira Nerys       | Bajoran  |  29
+   Miles O'Brien    | Human    |  45
+
+Baza fayli saqlandi: roster.db
+
+==========================================================================================
+TASK 4 — Titanic
+==========================================================================================
+Dataset o'lchami: 891 qator, 12 ustun
+
+4.1) SibSp > 0 VA Parch > 0 bo'lgan yo'lovchilar: 142 ta
+ PassengerId                                                      Name    Sex  Age  SibSp  Parch  Survived
+           8                            Palsson, Master. Gosta Leonard   male  2.0      3      1         0
+          11                           Sandstrom, Miss. Marguerite Rut female  4.0      1      1         1
+          14                               Andersson, Mr. Anders Johan   male 39.0      1      5         0
+          17                                      Rice, Master. Eugene   male  2.0      4      1         0
+          25                             Palsson, Miss. Torborg Danira female  8.0      3      1         0
+          26 Asplund, Mrs. Carl Oscar (Selma Augusta Emilia Johansson) female 38.0      1      5         1
+          28                            Fortune, Mr. Charles Alexander   male 19.0      3      2         0
+          44                  Laroche, Miss. Simonne Marie Anne Andree female  3.0      1      2         1
+          51                                Panula, Master. Juha Niilo   male  7.0      4      1         0
+          59                              West, Miss. Constance Mirium female  5.0      1      2         1
+
+4.2) Yoshi <= 15 va omon qolmagan yo'lovchilar: 34 ta
+ PassengerId                                 Name    Sex  Age  Pclass  Survived
+           8       Palsson, Master. Gosta Leonard   male  2.0       3         0
+          15 Vestrom, Miss. Hulda Amanda Adolfina female 14.0       3         0
+          17                 Rice, Master. Eugene   male  2.0       3         0
+          25        Palsson, Miss. Torborg Danira female  8.0       3         0
+          51           Panula, Master. Juha Niilo   male  7.0       3         0
+          60   Goodwin, Master. William Frederick   male 11.0       3         0
+          64                Skoog, Master. Harald   male  4.0       3         0
+         112                 Zabour, Miss. Hileni female 14.5       3         0
+         120    Andersson, Miss. Ellis Anna Maria female  2.0       3         0
+         148     Ford, Miss. Robina Maggie "Ruby" female  9.0       3         0
+
+==========================================================================================
+TASK 5 — customer_orders.csv
+==========================================================================================
+Dataset o'lchami: 100 qator, 5 ustun
+
+Har bir mijozdagi buyurtmalar soni:
+CustomerID
+101    21
+102    21
+103    20
+104    20
+105    18
+
+5.1) >= 20 ta buyurtma bergan mijozlar: [101, 102, 103, 104]
+     Qolgan qatorlar soni: 82 (boshlang'ich: 100)
+
+Har bir mijozning o'rtacha birlik narxi:
+CustomerID
+101    110.71
+102    138.10
+103     72.00
+104    169.75
+105     85.28
+
+5.2) O'rtacha birlik narxi > $120 bo'lgan mijozlar: [102, 104]
+CustomerID
+102    138.10
+104    169.75
+
+==========================================================================================
+Barcha topshiriqlar bajarildi.
+==========================================================================================
