@@ -159,7 +159,7 @@ def build_one_post() -> dict:
             print(f"[XATO - urinish {attempt}] {exc}")
             traceback.print_exc()
             if attempt < config.MAX_REGENERATE_ATTEMPTS:
-                wait_seconds = 45 if _is_quota_error(exc) else 5
+                wait_seconds = min(45 * (2 ** (attempt - 1)), 300) if _is_quota_error(exc) else 5
                 print(f"[KUTISH] {wait_seconds} soniya kutib, qayta urinamiz...")
                 time.sleep(wait_seconds)
 
