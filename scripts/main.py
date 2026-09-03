@@ -142,7 +142,11 @@ def build_one_post() -> dict:
                 print(f"[OGOHLANTIRISH] Pollinations rasm xatosi, zaxira rasmga o'tildi: {img_exc}")
                 image_bytes = generate_fallback_image(draft["topic"])
 
-            voice_bytes = generate_voice_message(draft["audio_text"])
+            try:
+                voice_bytes = generate_voice_message(draft["audio_text"])
+            except Exception as voice_exc:  # noqa: BLE001
+                print(f"[OGOHLANTIRISH] ElevenLabs ovoz xatosi, ovozsiz post chiqariladi: {voice_exc}")
+                voice_bytes = None
 
             return {
                 "topic": draft["topic"],
