@@ -8,6 +8,7 @@ import re
 import requests
 
 import config
+import topics_curriculum
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
@@ -42,15 +43,15 @@ def _parse_json_block(raw_text: str) -> dict:
 
 
 def generate_topic_and_post(used_topics: list[str]) -> dict:
-    """1 va 2-agent: mavzu tanlaydi va postni yozadi."""
+    """1 va 2-agent: mavzu tanlaydi (yoki curriculum'dan oladi) va postni yozadi."""
     avoid_list = "\n".join(f"- {t}" for t in used_topics[-60:]) or "(hali hech narsa yo'q)"
+    fixed_topic = topics_curriculum.next_topic(used_topics)
 
-    prompt = f"""
-Sen "{config.CHANNEL_BRAND}" nomli Telegram kanali uchun kontent tayyorlovchi yordamchisan.
-Kanal yo'nalishi: {config.RUBRIKA}
-
-Vazifa:
-1. Claude AI (Anthropic)ning imkoniyatlari, foydalanish usullari yoki amaliy promptlash
+    if fixed_topic:
+        topic_instruction = f"""1. Mavzu OLDINDAN BELGILANGAN (curriculum bo'yicha, ketma-ket) va o'zgartirib
+   bo'lmaydi - aynan shu mavzu bo'yicha yoz: "{fixed_topic}\""""
+    else:
+        topic_instruction = f"""1. Claude AI (Anthropic)ning imkoniyatlari, foydalanish usullari yoki amaliy promptlash
    texnikalari haqida ANIQ va AMALIY bitta mavzu tanla. Mavzu ANIQ bir funksiya, vosita
    yoki texnikaga asoslangan bo'lishi SHART (quyidagi ro'yxatdan ilhomlaning, lekin
    ularga qat'iy cheklanmang - boshqa amaliy mavzular ham bo'lishi mumkin):
@@ -73,7 +74,14 @@ Vazifa:
    - Claude mobil ilovasi (iOS/Android) - telefonda foydalanish
    - Claude in Chrome - brauzerda sahifalarni ko'rish, to'ldirish va boshqarish
    Mavzu quyidagi ro'yxatda allaqachon ishlatilganlardan FARQ QILISHI SHART:
-{avoid_list}
+{avoid_list}"""
+
+    prompt = f"""
+Sen "{config.CHANNEL_BRAND}" nomli Telegram kanali uchun kontent tayyorlovchi yordamchisan.
+Kanal yo'nalishi: {config.RUBRIKA}
+
+Vazifa:
+{topic_instruction}
 2. Shu mavzu asosida Telegram posti yoz. Post o'zbek tilida bo'lishi kerak va albatta
    ANIQ AMALIY QIYMAT berishi SHART - o'quvchi postni o'qib bo'lgach, Claude'da ANIQ
    nimani va qanday qilib sinab ko'rishni bilib olishi kerak (quruq falsafiy/hissiy
@@ -96,7 +104,10 @@ Javobni FAQAT quyidagi JSON formatida qaytar (boshqa hech qanday matn, izoh yoki
 }}
 """
     raw_text = _generate(prompt)
-    return _parse_json_block(raw_text)
+    result = _parse_json_block(raw_text)
+    if fixed_topic:
+        result["topic"] = fixed_topic
+    return result
 
 
 def qc_check(post_text: str) -> dict:
