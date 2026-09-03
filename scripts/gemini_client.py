@@ -69,12 +69,21 @@ Vazifa:
    - O'qish-o'rganishda yordamchi sifatida foydalanish (tushuntirish so'rash, test/mashq tuzdirish)
    - Ijodiy yozuv (hikoya, sarlavha, post g'oyalari, sarlavha variantlari)
    - Kodlashda xato topish va tuzatish (debugging), kodni tushuntirib berish
+   - Claude Desktop ilovasi - kompyuterga o'rnatish, imkoniyatlari va sozlamalari
+   - Claude mobil ilovasi (iOS/Android) - telefonda foydalanish
+   - Claude in Chrome - brauzerda sahifalarni ko'rish, to'ldirish va boshqarish
    Mavzu quyidagi ro'yxatda allaqachon ishlatilganlardan FARQ QILISHI SHART:
 {avoid_list}
 2. Shu mavzu asosida Telegram posti yoz. Post o'zbek tilida bo'lishi kerak va albatta
    ANIQ AMALIY QIYMAT berishi SHART - o'quvchi postni o'qib bo'lgach, Claude'da ANIQ
    nimani va qanday qilib sinab ko'rishni bilib olishi kerak (quruq falsafiy/hissiy
    mulohaza emas, balki haqiqiy foydali maslahat).
+3. ANIQLIK SHART: faqat ishonchli va tekshirilishi mumkin bo'lgan ma'lumot yoz. Aniq tugma
+   nomi, menyu joylashuvi, narx yoki funksiya haqida ANIQ eslay olmasang - taxmin qilib,
+   noto'g'ri yoki eskirgan ma'lumot o'ylab topma; buning o'rniga umumiyroq, lekin haqiqatga
+   mos tavsif ber. Mavhum yoki isbotlanmagan da'volardan ("eng yaxshi", "hammasini biladi",
+   "hech kim bilmaydi" kabi) qoch - faqat aniq, konkret va tekshirilishi mumkin bo'lgan
+   gaplar yoz.
 
 {config.POST_STYLE_GUIDE}
 
