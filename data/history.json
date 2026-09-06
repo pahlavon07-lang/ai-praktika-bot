@@ -20,5 +20,6 @@
   "Custom instructions - Claude'ga doimiy shaxsiy ko'rsatma berish",
   "Veb qidiruv (web search) orqali real vaqtdagi ma'lumot olish",
   "Ovozli rejim (voice mode) orqali Claude bilan gaplashib ishlash",
-  "Prompt yozish texnikasi: aniq misollar (few-shot) berish"
+  "Prompt yozish texnikasi: aniq misollar (few-shot) berish",
+  "Prompt yozish texnikasi: Claude'ga aniq rol va vazifa belgilash"
 ]
