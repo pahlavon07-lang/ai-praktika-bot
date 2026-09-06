@@ -19,5 +19,6 @@
   "Artifacts - kod, hujjat yoki diagrammani alohida oynada ko'rish va tahrirlash",
   "Custom instructions - Claude'ga doimiy shaxsiy ko'rsatma berish",
   "Veb qidiruv (web search) orqali real vaqtdagi ma'lumot olish",
-  "Ovozli rejim (voice mode) orqali Claude bilan gaplashib ishlash"
+  "Ovozli rejim (voice mode) orqali Claude bilan gaplashib ishlash",
+  "Prompt yozish texnikasi: aniq misollar (few-shot) berish"
 ]
