@@ -35,5 +35,6 @@
   "Claude AI da Tree of Thoughts texnikasi",
   "Delimiters usuli orqali prompt va matnni ajratish",
   "Claude AI da Instruction Sandwiching texnikasi",
-  "Claude AI'da Step-Back Prompting texnikasidan foydalanish"
+  "Claude AI'da Step-Back Prompting texnikasidan foydalanish",
+  "Claude AI da salbiy cheklovlar (Negative Constraints) orqali matnni tozalash"
 ]
