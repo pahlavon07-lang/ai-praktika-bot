@@ -39,5 +39,6 @@
   "Claude AI da salbiy cheklovlar (Negative Constraints) orqali matnni tozalash",
   "Claude AI da Pre-Mortem tahlili orqali xatolar oldini olish",
   "Claude AI da Prompt Chaining (Promptlar zanjiri) texnikasi",
-  "Claude AI da Reverse Prompting texnikasi"
+  "Claude AI da Reverse Prompting texnikasi",
+  "Claude AI da Style Matching orqali shaxsiy yozuv uslubini ko'chirish"
 ]
